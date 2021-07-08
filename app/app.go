@@ -24,6 +24,7 @@ type fyneApp struct {
 	icon     fyne.Resource
 	uniqueID string
 
+	cloud     fyne.CloudProvider
 	lifecycle fyne.Lifecycle
 	settings  *settings
 	storage   *store
@@ -32,6 +33,10 @@ type fyneApp struct {
 	running  bool
 	runMutex sync.Mutex
 	exec     func(name string, arg ...string) *exec.Cmd
+}
+
+func (a *fyneApp) CloudProvider() fyne.CloudProvider {
+	return a.cloud
 }
 
 func (a *fyneApp) Icon() fyne.Resource {
@@ -70,6 +75,16 @@ func (a *fyneApp) Run() {
 	a.driver.Run()
 }
 
+func (a *fyneApp) SetCloudProvider(p fyne.CloudProvider) {
+	a.cloud = p
+
+	if pp, ok := p.(fyne.CloudProviderPreferences); ok {
+		a.prefs = pp.CloudPreferences(a)
+	} else {
+		a.loadDefaultPreferences()
+	}
+}
+
 func (a *fyneApp) Quit() {
 	for _, window := range a.driver.AllWindows() {
 		window.Close()
@@ -104,6 +119,13 @@ func (a *fyneApp) Lifecycle() fyne.Lifecycle {
 	return a.lifecycle
 }
 
+func (a *fyneApp) loadDefaultPreferences() {
+	a.prefs = newPreferences(a)
+	if pref, ok := a.prefs.(interface{ load() }); ok && a.uniqueID != "" {
+		pref.load()
+	}
+}
+
 // New returns a new application instance with the default driver and no unique ID
 func New() fyne.App {
 	internal.LogHint("Applications should be created with a unique ID using app.NewWithID()")
@@ -114,10 +136,7 @@ func newAppWithDriver(d fyne.Driver, id string) fyne.App {
 	newApp := &fyneApp{uniqueID: id, driver: d, exec: exec.Command, lifecycle: &app.Lifecycle{}}
 	fyne.SetCurrentApp(newApp)
 
-	newApp.prefs = newPreferences(newApp)
-	if pref, ok := newApp.prefs.(interface{ load() }); ok && id != "" {
-		pref.load()
-	}
+	newApp.loadDefaultPreferences()
 	newApp.settings = loadSettings()
 	newApp.storage = &store{a: newApp}
 

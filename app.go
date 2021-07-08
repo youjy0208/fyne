@@ -60,6 +60,14 @@ type App interface {
 
 	// Lifecycle returns a type that allows apps to hook in to lifecycle events.
 	Lifecycle() Lifecycle
+
+	// CloudProvider returns the current app cloud provider,
+	// if one has been registered by the developer or chosen by the user.
+	CloudProvider() CloudProvider // get the (if any) configured provider
+
+	// SetCloudProvider allows developers to specify how this application should integrate with cloud services.
+	// See `fyne.io/cloud` package for implementation details.
+	SetCloudProvider(CloudProvider) // configure cloud for this app
 }
 
 var app App
