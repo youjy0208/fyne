@@ -67,7 +67,7 @@ func (m *preferencesMap) ensurePreferencesAttached(p fyne.Preferences) *preferen
 	m.lock.Unlock()
 
 	p.AddChangeListener(func() {
-		m.preferencesChanged(p)
+		m.preferencesChanged(fyne.CurrentApp().Preferences())
 	})
 	return binds
 }
