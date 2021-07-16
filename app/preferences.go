@@ -106,6 +106,9 @@ func newPreferences(app *fyneApp) *preferences {
 	}
 
 	p.AddChangeListener(func() {
+		if p != app.prefs {
+			return
+		}
 		p.prefLock.RLock()
 		shouldIgnoreChange := p.ignoreChange
 		p.prefLock.RUnlock()
