@@ -42,6 +42,8 @@ func (b *preferenceBindings) setItem(key string, item preferenceItem) {
 type preferencesMap struct {
 	lock  sync.RWMutex
 	prefs map[fyne.Preferences]*preferenceBindings
+
+	appPrefs fyne.Preferences // the main application prefs, to check if it changed...
 }
 
 func newPreferencesMap() *preferencesMap {
@@ -74,6 +76,14 @@ func (m *preferencesMap) ensurePreferencesAttached(p fyne.Preferences) *preferen
 
 func (m *preferencesMap) getBindings(p fyne.Preferences) *preferenceBindings {
 	m.lock.RLock()
+	if p == fyne.CurrentApp().Preferences() {
+		if m.appPrefs == nil {
+			m.appPrefs = p
+		} else if m.appPrefs != p {
+			m.migratePreferences(m.appPrefs, p)
+		}
+	}
+
 	binds := m.prefs[p]
 	m.lock.RUnlock()
 	return binds
@@ -87,4 +97,18 @@ func (m *preferencesMap) preferencesChanged(p fyne.Preferences) {
 	for _, item := range binds.list() {
 		item.checkForChange()
 	}
+}
+
+func (m *preferencesMap) migratePreferences(p1, p2 fyne.Preferences) {
+	m.prefs[p2] = m.prefs[p1]
+	delete(m.prefs, p1)
+	m.appPrefs = p2
+
+	for _, b := range m.prefs[p2].list() {
+		if backed, ok := b.(interface{ replaceProvider(fyne.Preferences) }); ok {
+			backed.replaceProvider(p2)
+		}
+	}
+
+	m.preferencesChanged(p2)
 }
