@@ -860,14 +860,24 @@ type rowBoundary struct {
 	begin, end        int
 }
 
-func (t *RichText) SetText(txt string, append bool) {
-	if len(t.Segments) == 0 {
-		return
+func (t *RichText) SetText(txt string, isAppend bool) {
+	t.SetTextWithStyle(txt, RichTextStyle{
+		ColorName: theme.ColorNameForeground,
+		Inline:    false,
+		SizeName:  theme.SizeNameText,
+	}, isAppend)
+}
+
+func (t *RichText) SetTextWithStyle(txt string, style RichTextStyle, isAppend bool) {
+	a := &TextSegment{
+		Style: style,
+		Text:  txt,
 	}
-	if append {
-		t.Segments[0].(*TextSegment).Text += txt
+	if isAppend {
+		t.Segments = append(t.Segments, a)
 	} else {
-		t.Segments[0].(*TextSegment).Text = txt
+		t.Segments = make([]RichTextSegment, 1)
+		t.Segments[0] = a
 	}
 	t.updateRowBounds()
 	t.Refresh()
