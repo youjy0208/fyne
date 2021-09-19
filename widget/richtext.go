@@ -859,3 +859,28 @@ type rowBoundary struct {
 	firstSegmentReuse int
 	begin, end        int
 }
+
+func (t *RichText) SetText(txt string, append bool) {
+	if len(t.Segments) == 0 {
+		return
+	}
+	if append {
+		t.Segments[0].(*TextSegment).Text += txt
+	} else {
+		t.Segments[0].(*TextSegment).Text = txt
+	}
+	t.updateRowBounds()
+	t.Refresh()
+}
+
+func (t *RichText) ScrollTo(row int) {
+	if t.scr == nil {
+		return
+	}
+	if row < 0 {
+		t.scr.Offset.Y = t.scr.Size().Height * float32(t.rows())
+	} else {
+		t.scr.Offset.Y = t.scr.Size().Height * float32(row)
+	}
+	t.scr.Refresh()
+}
