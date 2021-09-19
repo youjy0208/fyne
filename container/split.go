@@ -27,7 +27,11 @@ type Split struct {
 //
 // Since: 1.4
 func NewHSplit(leading, trailing fyne.CanvasObject) *Split {
-	return newSplitContainer(true, leading, trailing)
+	return newSplitContainer(0.5, true, leading, trailing)
+}
+
+func NewHSplitWithRatio(ratio float64, leading, trailing fyne.CanvasObject) *Split {
+	return newSplitContainer(ratio, true, leading, trailing)
 }
 
 // NewVSplit creates a vertically arranged container with the specified top and bottom elements.
@@ -35,12 +39,16 @@ func NewHSplit(leading, trailing fyne.CanvasObject) *Split {
 //
 // Since: 1.4
 func NewVSplit(top, bottom fyne.CanvasObject) *Split {
-	return newSplitContainer(false, top, bottom)
+	return newSplitContainer(0.5, false, top, bottom)
 }
 
-func newSplitContainer(horizontal bool, leading, trailing fyne.CanvasObject) *Split {
+func NewVSplitWithRadio(ratio float64, top, bottom fyne.CanvasObject) *Split {
+	return newSplitContainer(ratio, false, top, bottom)
+}
+
+func newSplitContainer(ratio float64, horizontal bool, leading, trailing fyne.CanvasObject) *Split {
 	s := &Split{
-		Offset:     0.5, // Sensible default, can be overridden with SetOffset
+		Offset:     ratio, // Sensible default, can be overridden with SetOffset
 		Horizontal: horizontal,
 		Leading:    leading,
 		Trailing:   trailing,
