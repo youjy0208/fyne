@@ -876,8 +876,8 @@ func (t *RichText) SetTextWithStyle(txt string, style RichTextStyle, isAppend bo
 	if isAppend {
 		t.Segments = append(t.Segments, a)
 	} else {
-		t.Segments = make([]RichTextSegment, 1)
 		t.Segments[0] = a
+		t.Segments = t.Segments[:1]
 	}
 	t.updateRowBounds()
 	t.Refresh()

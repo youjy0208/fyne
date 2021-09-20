@@ -68,6 +68,9 @@ const (
 	// Since: 2.0
 	ColorNameError fyne.ThemeColorName = "error"
 
+	// Since: 2.0
+	ColorNameSuccess fyne.ThemeColorName = "success"
+
 	// ColorNameFocus is the name of theme lookup for focus color.
 	//
 	// Since: 2.0
@@ -185,8 +188,9 @@ const (
 var (
 	defaultTheme = setupDefaultTheme()
 
-	errorColor  = color.NRGBA{0xf4, 0x43, 0x36, 0xff}
-	focusColors = map[string]color.Color{
+	errorColor   = color.NRGBA{0xf4, 0x43, 0x36, 0xff}
+	successColor = color.NRGBA{R: 0x8b, G: 0xc3, B: 0x4a, A: 0xff}
+	focusColors  = map[string]color.Color{
 		ColorRed:    color.NRGBA{R: 0xf4, G: 0x43, B: 0x36, A: 0x7f},
 		ColorOrange: color.NRGBA{R: 0xff, G: 0x98, B: 0x00, A: 0x7f},
 		ColorYellow: color.NRGBA{R: 0xff, G: 0xeb, B: 0x3b, A: 0x7f},
@@ -225,6 +229,7 @@ var (
 		ColorNameDisabled:        color.NRGBA{0xff, 0xff, 0xff, 0x42},
 		ColorNameDisabledButton:  color.NRGBA{0x26, 0x26, 0x26, 0xff},
 		ColorNameError:           errorColor,
+		ColorNameSuccess:         successColor,
 		ColorNameForeground:      color.NRGBA{0xff, 0xff, 0xff, 0xff},
 		ColorNameHover:           color.NRGBA{0xff, 0xff, 0xff, 0x0f},
 		ColorNameInputBackground: color.NRGBA{0xff, 0xff, 0xff, 0x19},
@@ -240,6 +245,7 @@ var (
 		ColorNameDisabled:        color.NRGBA{0x0, 0x0, 0x0, 0x42},
 		ColorNameDisabledButton:  color.NRGBA{0xe5, 0xe5, 0xe5, 0xff},
 		ColorNameError:           errorColor,
+		ColorNameSuccess:         successColor,
 		ColorNameForeground:      color.NRGBA{0x21, 0x21, 0x21, 0xff},
 		ColorNameHover:           color.NRGBA{0x0, 0x0, 0x0, 0x0f},
 		ColorNameInputBackground: color.NRGBA{0x0, 0x0, 0x0, 0x19},
@@ -424,6 +430,10 @@ func DisabledTextColor() color.Color {
 // Since: 2.0
 func ErrorColor() color.Color {
 	return safeColorLookup(ColorNameError, currentVariant())
+}
+
+func SuccessColor() color.Color {
+	return safeColorLookup(ColorNameSuccess, currentVariant())
 }
 
 // PlaceHolderColor returns the theme's standard text color
