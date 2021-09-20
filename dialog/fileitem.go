@@ -50,7 +50,7 @@ func (i *fileDialogItem) Tapped(_ *fyne.PointEvent) {
 func (i *fileDialogItem) CreateRenderer() fyne.WidgetRenderer {
 	background := canvas.NewRectangle(theme.PrimaryColor())
 	background.Hide()
-	text := widget.NewLabelWithStyle(i.name, fyne.TextAlignCenter, fyne.TextStyle{})
+	text := widget.NewLabelWithStyle(i.name, fyne.TextAlignLeading, fyne.TextStyle{})
 	text.Wrapping = fyne.TextTruncate
 	icon := widget.NewFileIcon(i.location)
 

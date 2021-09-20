@@ -91,9 +91,9 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 		f.fileName = widget.NewLabel("")
 	}
 
-	label := "Open"
+	label := "打开"
 	if f.file.save {
-		label = "Save"
+		label = "保存"
 	}
 	f.open = widget.NewButton(label, func() {
 		if f.file.callback == nil {
@@ -161,7 +161,7 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 	if f.file.save {
 		f.fileName.SetText(f.initialFileName)
 	}
-	dismissLabel := "Cancel"
+	dismissLabel := "取消"
 	if f.file.dismissText != "" {
 		dismissLabel = f.file.dismissText
 	}
@@ -189,12 +189,13 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 
 	f.breadcrumb = container.NewHBox()
 	f.breadcrumbScroll = container.NewHScroll(container.NewPadded(f.breadcrumb))
-	title := label + " File"
+	title := label + " 文件"
 	if f.file.isDirectory() {
-		title = label + " Folder"
+		title = label + " 目录"
 	}
 
-	f.setView(gridView)
+	f.setView(listView)
+	// f.setView(gridView)
 	f.loadFavorites()
 
 	f.favoritesList = widget.NewList(
@@ -254,7 +255,7 @@ func (f *fileDialog) makeUI() fyne.CanvasObject {
 }
 
 func (f *fileDialog) optionsMenu(position fyne.Position, buttonSize fyne.Size) {
-	hiddenFiles := widget.NewCheck("Show Hidden Files", func(changed bool) {
+	hiddenFiles := widget.NewCheck("显示隐藏文件", func(changed bool) {
 		f.showHidden = changed
 		f.refreshDir(f.dir)
 	})
@@ -311,7 +312,7 @@ func (f *fileDialog) refreshDir(dir fyne.ListableURI) {
 		return
 	}
 	if parent != nil && parent.String() != dir.String() {
-		fi := &fileDialogItem{picker: f, name: "(Parent)", location: parent, dir: true}
+		fi := &fileDialogItem{picker: f, name: "..", location: parent, dir: true}
 		fi.ExtendBaseWidget(fi)
 		icons = append(icons, fi)
 	}
