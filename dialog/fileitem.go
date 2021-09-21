@@ -1,8 +1,6 @@
 package dialog
 
 import (
-	"path/filepath"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/driver/desktop"
@@ -63,14 +61,14 @@ func (i *fileDialogItem) CreateRenderer() fyne.WidgetRenderer {
 	}
 }
 
-func fileName(path fyne.URI) (name string) {
-	pathstr := path.String()[len(path.Scheme())+3:]
-	name = filepath.Base(pathstr)
-	ext := filepath.Ext(name[1:])
-	name = name[:len(name)-len(ext)]
+// func fileName(path fyne.URI) (name string) {
+// 	pathstr := path.String()[len(path.Scheme())+3:]
+// 	name = filepath.Base(pathstr)
+// 	ext := filepath.Ext(name[1:])
+// 	name = name[:len(name)-len(ext)]
 
-	return
-}
+// 	return
+// }
 
 func (i *fileDialogItem) isDirectory() bool {
 	return i.dir
@@ -86,7 +84,7 @@ func (f *fileDialog) newFileItem(location fyne.URI, dir bool) *fileDialogItem {
 	if dir {
 		item.name = location.Name()
 	} else {
-		item.name = fileName(location)
+		item.name = location.Name()
 	}
 
 	item.ExtendBaseWidget(item)
